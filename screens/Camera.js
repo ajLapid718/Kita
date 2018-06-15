@@ -1,18 +1,30 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Button } from 'react-native';
+import { Text, View, TouchableOpacity, Button, CameraRoll } from 'react-native';
 import { Camera, Permissions } from 'expo';
 
 export default class rootCamera extends React.Component {
-  state = {
-    hasCameraPermission: null,
-    type: Camera.Constants.Type.back
-  };
+  constructor() {
+    super();
+    this.snap = this.snap.bind(this);
+    this.state = {
+      hasCameraPermission: null,
+      type: Camera.Constants.Type.back,
+      cameraRollUri: null
+    };
+  }
 
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
-
+  snap = async () => {
+    console.log('hit');
+    if (this.camera) {
+      let photo = await this.camera.takePictureAsync();
+      let saveResult = await CameraRoll.saveToCameraRoll(photo.uri, 'photo');
+      this.setState({ cameraRollUri: saveResult });
+    }
+  };
   render() {
     console.log(this.props.navigation);
     const { hasCameraPermission } = this.state;
@@ -23,7 +35,12 @@ export default class rootCamera extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
-          <Camera style={{ flex: 1 }} type={this.state.type}>
+          <Camera
+            style={{ flex: 1 }}
+            type={this.state.type}
+            ref={ref => {
+              this.camera = ref;
+            }}>
             <View
               style={{
                 flex: 1,
@@ -50,6 +67,11 @@ export default class rootCamera extends React.Component {
                   Flip{' '}
                 </Text>
               </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button onPress={this.snap} title="button">
+                Take pic
+              </Button>
             </View>
           </Camera>
         </View>
