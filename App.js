@@ -4,11 +4,23 @@ import { createStackNavigator } from 'react-navigation';
 import rootCamera from './screens/Camera';
 import rootText from './screens/Text';
 
-const RootNavigator = createStackNavigator({
-  rootText: { screen: rootText },
-  rootCamera: { screen: rootCamera }
-});
+const RootNavigator = createStackNavigator(
+  {
+    rootCamera: { screen: rootCamera },
+    rootText: { screen: rootText }
+  },
+  {
+    headerMode: 'none',
+    navigationOptions: {
+      headerVisible: false
+    }
+  }
+);
+
 export default class App extends React.Component {
+  static navigationOptions = {
+    header: { visible: false }
+  };
   render() {
     return <RootNavigator />;
   }
