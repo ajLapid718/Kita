@@ -6,7 +6,7 @@ const rootText = props => {
   return (
     <View style={{ flex: 1 }}>
       <Text style={{textAlign: 'center'}}>Hello World </Text>
-      <Button title="Go To Camera" onPress={() => navigate('rootCamera')} />
+      <Button title="Go To Camera" onPress={() => navigate('rootCameraContainer')} />
     </View>
   );
 };

@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, CameraRoll } from 'react-native';
 import { Button, Text } from 'native-base';
-
 import { Camera, Permissions } from 'expo';
+import { getParsedTextThunk } from '../redux/store';
+import { connect } from 'react-redux';
 
-export default class rootCamera extends React.Component {
+export class rootCamera extends React.Component {
   constructor() {
     super();
     this.snap = this.snap.bind(this);
@@ -20,7 +21,6 @@ export default class rootCamera extends React.Component {
   snap = async () => {
     if (this.camera) {
       const { uri } = await this.camera.takePictureAsync();
-
       await CameraRoll.saveToCameraRoll(uri, 'photo');
     }
   };
@@ -55,3 +55,13 @@ export default class rootCamera extends React.Component {
     }
   }
 }
+
+const mapDispatch = (dispatch) => {
+  return {
+    getText: uri => dispatch(getParsedTextThunk(uri))
+  }
+}
+
+const CameraContainer = connect(null, mapDispatch)(rootCamera);
+
+export default CameraContainer;
