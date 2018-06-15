@@ -19,7 +19,11 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@google-cloud/vision": "^0.20.0",
+    "dotenv": "^6.0.0",
     "expo": "^27.0.1",
+    "native-base": "^2.5.2",
+    "rapidapi-connect": "0.0.6",
     "react": "16.3.1",
     "react-native": "~0.55.2",
     "react-navigation": "^2.3.1",
