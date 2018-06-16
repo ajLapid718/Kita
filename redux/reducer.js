@@ -9,7 +9,7 @@
 const GET_PARSED_TEXT_OBJ = 'GET_PARSED_TEXT_OBJ';
 
 // ACTION CREATOR;
-
+import config from '../config';
 export const getParsedTextObj = parsedTextObj => {
   return {
     type: GET_PARSED_TEXT_OBJ,
@@ -18,19 +18,31 @@ export const getParsedTextObj = parsedTextObj => {
 };
 
 // THUNK;
-export const getParsedTextThunk = uri => {
-  // // Performs label detection on the image file
-  // client
-  //   .labelDetection('https://i.chzbgr.com/full/9013910528/hAB49129F/')
-  //   .then(results => {
-  //     const labels = results[0].labelAnnotations;
+export const getParsedTextThunk = image => {
+  fetch(config.googleCloud.api + config.googleCloud.apiKey, {
+    method: 'POST',
+    body: JSON.stringify({
+      requests: [
+        {
+          image: {
+            content: image
+          },
+          features: [
+            {
+              type: 'TEXT_DETECTION',
+              maxResults: 1
+            }
+          ]
+        }
+      ]
+    })
+  })
+    .then(response => {
+      let text = response.json();
 
-  //     console.log('Labels:');
-  //     labels.forEach(label => console.log(label.description));
-  //   })
-  //   .catch(err => {
-  //     console.error('ERROR:', err);
-  //   }); 
+      return text;
+    })
+    .then(text => console.log(text.responses[0].fullTextAnnotation.text));
 };
 
 // REDUCER;
