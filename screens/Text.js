@@ -1,9 +1,10 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-
+import { Speech } from 'expo';
 export const rootText = props => {
   let { navigate } = props.navigation;
   let targetText = props.navigation.state.params.text || 'Text not recognized';
+  Expo.Speech.speak(targetText);
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -15,7 +16,10 @@ export const rootText = props => {
       </View>
       <Button
         title="Go To Camera"
-        onPress={() => navigate('rootCameraContainer')}
+        onPress={() => {
+          Expo.Speech.stop();
+          navigate('rootCameraContainer');
+        }}
       />
     </View>
   );
