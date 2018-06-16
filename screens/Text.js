@@ -3,7 +3,7 @@ import { Text, View, Button } from 'react-native';
 
 export const rootText = props => {
   let { navigate } = props.navigation;
-  let targetText = props.navigation.state.params.text;
+  let targetText = props.navigation.state.params.text || 'Text not recognized';
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

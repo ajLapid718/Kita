@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Button, Text } from 'native-base';
 import { Camera, Permissions } from 'expo';
+import Loader from './Loader';
 import config from '../config';
 
 class rootCamera extends React.Component {
@@ -9,7 +10,8 @@ class rootCamera extends React.Component {
     super();
     this.snap = this.snap.bind(this);
     this.state = {
-      hasCameraPermission: null
+      hasCameraPermission: null,
+      loading: false
     };
   }
 
@@ -19,6 +21,7 @@ class rootCamera extends React.Component {
   }
 
   snap = async () => {
+    this.setState({ loading: true });
     const { navigate } = this.props.navigation;
     if (this.camera) {
       let photo;
@@ -26,6 +29,7 @@ class rootCamera extends React.Component {
       try {
         photo = await this.camera.takePictureAsync({ base64: true });
         textRecieved = await this.getText(photo.base64);
+        this.setState({ loading: false });
       } catch (err) {
         console.log(err);
       }
@@ -70,6 +74,7 @@ class rootCamera extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
+          <Loader loading={this.state.loading} />
           <Camera
             style={{
               flex: 1,
