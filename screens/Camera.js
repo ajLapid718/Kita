@@ -2,8 +2,9 @@ import React from 'react';
 import { View, CameraRoll } from 'react-native';
 import { Button, Text } from 'native-base';
 import { Camera, Permissions } from 'expo';
-import { getParsedTextThunk } from '../redux/store';
+import { getParsedTextThunk } from '../redux/reducer';
 import { connect } from 'react-redux';
+import config from '../config';
 
 export class rootCamera extends React.Component {
   constructor() {
@@ -20,8 +21,8 @@ export class rootCamera extends React.Component {
   }
   snap = async () => {
     if (this.camera) {
-      const { uri } = await this.camera.takePictureAsync();
-      await CameraRoll.saveToCameraRoll(uri, 'photo');
+      const photo = await this.camera.takePictureAsync({ base64: true });
+      this.props.getText(photo.base64);
     }
   };
   render() {
@@ -56,6 +57,12 @@ export class rootCamera extends React.Component {
   }
 }
 
+const mapState = state => {
+  return {
+    text: state
+  };
+};
+
 const mapDispatch = dispatch => {
   return {
     getText: uri => dispatch(getParsedTextThunk(uri))
@@ -63,7 +70,7 @@ const mapDispatch = dispatch => {
 };
 
 const CameraContainer = connect(
-  null,
+  mapState,
   mapDispatch
 )(rootCamera);
 
