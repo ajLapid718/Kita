@@ -57,12 +57,6 @@ export class rootCamera extends React.Component {
   }
 }
 
-const mapState = state => {
-  return {
-    text: state
-  };
-};
-
 const mapDispatch = dispatch => {
   return {
     getText: uri => dispatch(getParsedTextThunk(uri))
@@ -70,7 +64,7 @@ const mapDispatch = dispatch => {
 };
 
 const CameraContainer = connect(
-  mapState,
+  null,
   mapDispatch
 )(rootCamera);
 

@@ -1,14 +1,9 @@
-// Imports the Google Cloud client library
-// const vision = require('@google-cloud/vision');
-
-// // Creates a client
-// const client = new vision.ImageAnnotatorClient();
-
 // ACTION NAMING;
 
 const GET_PARSED_TEXT_OBJ = 'GET_PARSED_TEXT_OBJ';
 
 // ACTION CREATOR;
+
 import config from '../config';
 export const getParsedTextObj = parsedTextObj => {
   return {
@@ -18,6 +13,7 @@ export const getParsedTextObj = parsedTextObj => {
 };
 
 // THUNK;
+
 export const getParsedTextThunk = image => {
   fetch(config.googleCloud.api + config.googleCloud.apiKey, {
     method: 'POST',
@@ -37,12 +33,12 @@ export const getParsedTextThunk = image => {
       ]
     })
   })
-    .then(response => {
-      let text = response.json();
-
-      return text;
-    })
-    .then(text => console.log(text.responses[0].fullTextAnnotation.text));
+  .then(response => {
+    let text = response.json();
+    return text;
+  })
+  .then(text => console.log(text.responses[0].fullTextAnnotation.text))
+  .catch(err => console.log(err));
 };
 
 // REDUCER;
