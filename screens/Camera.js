@@ -1,12 +1,10 @@
 import React from 'react';
-import { View, CameraRoll } from 'react-native';
+import { View } from 'react-native';
 import { Button, Text } from 'native-base';
 import { Camera, Permissions } from 'expo';
-import { getParsedTextThunk } from '../redux/reducer';
-import { connect } from 'react-redux';
 import config from '../config';
 
-export class rootCamera extends React.Component {
+class rootCamera extends React.Component {
   constructor() {
     super();
     this.snap = this.snap.bind(this);
@@ -19,12 +17,50 @@ export class rootCamera extends React.Component {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
+
   snap = async () => {
+    const { navigate } = this.props.navigation;
     if (this.camera) {
-      const photo = await this.camera.takePictureAsync({ base64: true });
-      this.props.getText(photo.base64);
+      let photo;
+      let textRecieved;
+      try {
+        photo = await this.camera.takePictureAsync({ base64: true });
+        textRecieved = await this.getText(photo.base64);
+      } catch (err) {
+        console.log(err);
+      }
+      navigate('rootText', { text: textRecieved });
     }
   };
+
+  getText = image => {
+    return fetch(config.googleCloud.api + config.googleCloud.apiKey, {
+      method: 'POST',
+      body: JSON.stringify({
+        requests: [
+          {
+            image: {
+              content: image
+            },
+            features: [
+              {
+                type: 'TEXT_DETECTION',
+                maxResults: 1
+              }
+            ]
+          }
+        ]
+      })
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(text => {
+        return text.responses[0].fullTextAnnotation.text;
+      })
+      .catch(err => console.log(err));
+  };
+
   render() {
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
@@ -57,15 +93,4 @@ export class rootCamera extends React.Component {
   }
 }
 
-const mapDispatch = dispatch => {
-  return {
-    getText: uri => dispatch(getParsedTextThunk(uri))
-  };
-};
-
-const CameraContainer = connect(
-  null,
-  mapDispatch
-)(rootCamera);
-
-export default CameraContainer;
+export default rootCamera;
