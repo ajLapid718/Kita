@@ -3,8 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import rootCameraContainer from './screens/Camera';
 import rootText from './screens/Text';
-import rootStore from './redux/store';
-import { Provider } from 'react-redux';
 
 const RootNavigator = createStackNavigator(
   {
@@ -24,11 +22,7 @@ export default class App extends React.Component {
     header: { visible: false }
   };
   render() {
-    return (
-      <Provider store={rootStore}>
-        <RootNavigator />
-      </Provider>
-    );
+    return <RootNavigator />;
   }
 }
 

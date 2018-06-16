@@ -5,6 +5,7 @@ const GET_PARSED_TEXT_OBJ = 'GET_PARSED_TEXT_OBJ';
 // ACTION CREATOR;
 
 import config from '../config';
+
 export const getParsedTextObj = parsedTextObj => {
   return {
     type: GET_PARSED_TEXT_OBJ,
@@ -33,20 +34,19 @@ export const getParsedTextThunk = image => {
       ]
     })
   })
-  .then(response => {
-    let text = response.json();
-    return text;
-  })
-  .then(text => console.log(text.responses[0].fullTextAnnotation.text))
-  .catch(err => console.log(err));
+    .then(response => {
+      return response.json();
+    })
+    .then(text => getParsedTextObj(text.responses[0].fullTextAnnotation.text))
+    .catch(err => console.log(err));
 };
 
 // REDUCER;
 
-export default (state = {}, action) => {
+export default (state = '', action) => {
   switch (action.type) {
     case GET_PARSED_TEXT_OBJ:
-      return { ...state, parsedTextObj: action.payload };
+      return action.payload;
     default:
       return state;
   }
