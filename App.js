@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import rootCameraContainer from './screens/Camera';
 import rootText from './screens/Text';

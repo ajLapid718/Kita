@@ -62,16 +62,13 @@ class rootCamera extends React.Component {
       .catch(err => console.log(err));
   };
 
-  getTranslatedText = parsedText => {
-    let fromLang = 'en';
-    let toLang = 'es';
+  getTranslatedText = async parsedText => {
+    let lang = await Expo.Util.getCurrentLocaleAsync();
+    let toLang = lang.slice(0, 2);
     let text = parsedText;
-
     const API_KEY = config.apiKey;
-
     let url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
     url += '&q=' + encodeURI(text);
-    url += `&source=${fromLang}`;
     url += `&target=${toLang}`;
 
     return fetch(url, {
@@ -83,6 +80,7 @@ class rootCamera extends React.Component {
     })
       .then(res => res.json())
       .then(response => {
+        console.log(response);
         return response.data.translations[0].translatedText;
       })
       .catch(error => {
