@@ -19,7 +19,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@google-cloud/vision": "^0.20.0",
+    "axios": "^0.18.0",
     "dotenv": "^6.0.0",
     "expo": "^27.0.1",
     "native-base": "^2.5.2",
