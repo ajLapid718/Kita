@@ -31,7 +31,8 @@ class rootCamera extends React.Component {
         photo = await this.camera.takePictureAsync({ base64: true });
         textRecieved = await this.getText(photo.base64);
         translatedText = await this.getTranslatedText(textRecieved);
-        console.log(translatedText);
+        if (translatedText === 'undefined')
+          translatedText = 'Text not recognized';
         this.setState({ loading: false });
       } catch (err) {
         console.log(err);
@@ -62,16 +63,13 @@ class rootCamera extends React.Component {
       .catch(err => console.log(err));
   };
 
-  getTranslatedText = parsedText => {
-    let fromLang = 'en';
-    let toLang = 'es';
+  getTranslatedText = async parsedText => {
+    let lang = await Expo.DangerZone.Localization.getCurrentLocaleAsync();
+    let toLang = lang.slice(0, 2);
     let text = parsedText;
-
     const API_KEY = config.apiKey;
-
     let url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
     url += '&q=' + encodeURI(text);
-    url += `&source=${fromLang}`;
     url += `&target=${toLang}`;
 
     return fetch(url, {
@@ -101,6 +99,7 @@ class rootCamera extends React.Component {
         <View style={{ flex: 1 }}>
           <Loader loading={this.state.loading} />
           <Camera
+            autoFocus={Camera.Constants.AutoFocus.on}
             style={{
               flex: 1,
               flexDirection: 'row',
