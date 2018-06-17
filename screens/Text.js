@@ -1,27 +1,31 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
+import { Button } from 'native-base';
+
 export const rootText = props => {
   let { navigate } = props.navigation;
   let targetText = props.navigation.state.params.text || 'Text not recognized';
   Expo.Speech.speak(targetText);
-  //{ language: 'es' }
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <View stlye={{ flex: 1 }}>
-          <Text style={{ textAlign: 'center', fontSize: 30 }}>
-            {targetText}
-          </Text>
-        </View>
-      </View>
+    <View style={{ flex: 1, marginTop: 20 }}>
       <Button
-        title="Go To Camera"
+        block
+        primary
         onPress={() => {
           Expo.Speech.stop();
           navigate('rootCameraContainer');
-        }}
-      />
+        }}>
+        <Text style={{ color: 'white' }}> Back to Camera </Text>
+      </Button>
+      <ScrollView style={{ flex: 1, margin: 20 }}>
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <View stlye={{ flex: 1 }}>
+            <Text style={{ fontSize: 20 }}>{targetText}</Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
