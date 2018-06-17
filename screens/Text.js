@@ -5,6 +5,7 @@ export const rootText = props => {
   let { navigate } = props.navigation;
   let targetText = props.navigation.state.params.text || 'Text not recognized';
   Expo.Speech.speak(targetText);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

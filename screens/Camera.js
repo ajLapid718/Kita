@@ -38,7 +38,7 @@ class rootCamera extends React.Component {
   };
 
   getText = image => {
-    return fetch(config.googleCloud.api + config.googleCloud.apiKey, {
+    return fetch(config.googleCloudVision.api + config.apiKey, {
       method: 'POST',
       body: JSON.stringify({
         requests: [
@@ -61,6 +61,35 @@ class rootCamera extends React.Component {
       })
       .then(text => {
         return text.responses[0].fullTextAnnotation.text;
+      })
+      .then(parsedText => {
+        let fromLang = 'en';
+        let toLang = 'es';
+        let text = parsedText;
+        let url = `https://translation.googleapis.com/language/translate/v2`;
+        url += '&q=' + encodeURI(text);
+        url += `&target${toLang}`;
+        url += `&source=${fromLang}`;
+        url += `&key=${config.apiKey}`;
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        })
+          .then(res => res.json())
+          .then(response => {
+            console.log(response);
+            return response;
+          })
+          .catch(error => {
+            console.log(
+              'There was an error with the translation request: ',
+              error
+            );
+          });
       })
       .catch(err => console.log(err));
   };
