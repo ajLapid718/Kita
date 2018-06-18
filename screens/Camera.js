@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Text } from 'native-base';
-import { Camera, Permissions } from 'expo';
+import { Camera, Permissions, ImageManipulator } from 'expo';
 import Loader from './Loader';
 import config from '../config';
 import axios from 'axios';
@@ -28,13 +28,22 @@ class rootCamera extends React.Component {
       let textRecieved;
       let translatedText;
       try {
-        photo = await this.camera.takePictureAsync({ base64: true });
+        let { uri } = await this.camera.takePictureAsync();
+        photo = await ImageManipulator.manipulate(
+          uri,
+          [{ resize: { width: 420 } }],
+          {
+            base64: true
+          }
+        );
         textRecieved = await this.getText(photo.base64);
         translatedText = await this.getTranslatedText(textRecieved);
-        if (translatedText === 'undefined')
+        if (translatedText === 'undefined') {
           translatedText = 'Text not recognized';
+        }
         this.setState({ loading: false });
       } catch (err) {
+        this.setState({ loading: false });
         console.log(err);
       }
       navigate('rootText', { text: translatedText });
@@ -72,17 +81,10 @@ class rootCamera extends React.Component {
     url += '&q=' + encodeURI(text);
     url += `&target=${toLang}`;
 
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
-    })
-      .then(res => res.json())
-      .then(response => {
-        return response.data.translations[0].translatedText;
-      })
+    return axios
+      .post(url)
+      .then(res => res.data)
+      .then(response => response.data.translations[0].translatedText)
       .catch(error => {
         console.log('There was an error with the translation request: ', error);
       });
